@@ -4,9 +4,9 @@ import org.example.todolist.model.Task;
 import org.example.todolist.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +43,18 @@ public class TaskController {
         return taskService.countTaskByName(name);
     }
 
+    @GetMapping("/debug/users")
+    public String debugUsers() {
+        return "InMemory users: user/1234, admin/12345";
+    }
+
     //Post
     @PostMapping("/new_task")
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@RequestBody Task task, Authentication authentication) {
         if (task.getName() == null || task.getName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
         } else {
-            return taskService.createTask(task);
+            return taskService.createTask(task, authentication.getName());
         }
     }
 

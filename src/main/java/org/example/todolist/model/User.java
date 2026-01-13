@@ -17,7 +17,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long Id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -44,7 +44,4 @@ public class User {
     }
 }
 
-enum Role {
-    USER, ADMIN
-}
 

@@ -2,6 +2,7 @@ package org.example.todolist.service;
 
 import jakarta.transaction.Transactional;
 import org.example.todolist.model.Task;
+import org.example.todolist.model.User;
 import org.example.todolist.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,8 @@ import java.util.Optional;
 @Service
 public class TaskService {
 
-    @Autowired
-    TaskRepository taskRepository;
+    @Autowired TaskRepository taskRepository;
+    @Autowired UserService userService;
 
     //Get
     public List<Task> getAllTasks() {
@@ -36,7 +37,9 @@ public class TaskService {
     }
     //Post
     @Transactional
-    public Task createTask(Task task) {
+    public Task createTask(Task task, String userName) {
+        User user = userService.findByName(userName);
+        task.setUser(user);
         return taskRepository.save(task);
     }
 

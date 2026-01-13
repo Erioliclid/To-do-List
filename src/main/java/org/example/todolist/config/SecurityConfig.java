@@ -22,27 +22,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("1234"))
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("12345"))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/tasks/**").hasAnyRole("ADMIN", "USER")
-                .anyRequest().authenticated()).httpBasic(httpBasic -> {})
-                .csrf(AbstractHttpConfigurer::disable);
+                        .requestMatchers("/api/tasks/debug/users").permitAll()  // ← Любой URL начинающийся с /debug
+                        .requestMatchers("/api/tasks/**").hasAnyRole("ADMIN", "USER")
+                        .anyRequest().authenticated())
+                .httpBasic(httpBasic -> {})
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
